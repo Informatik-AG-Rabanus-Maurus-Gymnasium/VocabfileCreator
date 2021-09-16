@@ -1,21 +1,23 @@
 package me.soeren;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.*;
 
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.*;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+
+
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 
 public class Frame {
@@ -120,9 +122,14 @@ public class Frame {
             createSubstantivFrame.setVisible(false);
             menu.setVisible(true);
 
+            grundFormInput.setText("");
+            genusChooser.setSelectedIndex(0);
+            bedeutungInput.setText("");
+            genitivInput.setText("");
+
         });
         addSubstantiv.addActionListener(e -> {
-            //TODO: add Logic for Substantiv Creation
+
             createSubstantivFrame.setVisible(false);
             menu.setVisible(true);
             switch (genusChooser.getSelectedIndex()) {
@@ -193,6 +200,12 @@ public class Frame {
         exitVerbCreation.addActionListener(e -> {
             menu.setVisible(true);
             verbCreationFrame.setVisible(false);
+
+            verbInfinitivInput.setText("");
+            praesensIndikativInput.setText("");
+            perfektIndikativInput.setText("");
+            verbBedeutungInput.setText("");
+            supinstammInput.setText("");
         });
 
         addVerb.addActionListener(e -> {
@@ -222,6 +235,64 @@ public class Frame {
 
         //Region AdjektivJFrameCreation
         JFrame adjektivCreationFrame = new JFrame("Adjektiv hinzufügen");
+
+        JLabel adjektivNominativ = new JLabel("Nominativ:");
+        JTextField adjektivNominativInput = new JTextField();
+
+        JLabel genitivMaskulin = new JLabel("Genitiv m.");
+        JTextField genitivMaskulinInput = new JTextField();
+
+        JLabel genitivFeminin = new JLabel("Genitiv f. ");
+        JTextField genitivFemininInput = new JTextField();
+
+        JLabel genitivNeutrum = new JLabel("Genitiv n. ");
+        JTextField genitivNeutrumInput = new JTextField();
+
+        JLabel adjektivBedeutung = new JLabel("Bedeutung: ");
+        JTextField adjektivBedeutngInput = new JTextField();
+
+        JButton exitAdjektivCreation = new JButton("zurück zum Menü");
+        JButton addAdjektiv = new JButton("Eingabe bestätiger");
+
+
+        adjektivCreationFrame.add(adjektivNominativ);
+        adjektivCreationFrame.add(adjektivNominativInput);
+        adjektivCreationFrame.add(genitivMaskulin);
+        adjektivCreationFrame.add(genitivMaskulinInput);
+        adjektivCreationFrame.add(genitivFeminin);
+        adjektivCreationFrame.add(genitivFemininInput);
+        adjektivCreationFrame.add(genitivNeutrum);
+        adjektivCreationFrame.add(genitivNeutrumInput);
+        adjektivCreationFrame.add(adjektivBedeutung );
+        adjektivCreationFrame.add(adjektivBedeutngInput);
+        adjektivCreationFrame.add(exitAdjektivCreation);
+        adjektivCreationFrame.add(addAdjektiv);
+
+        exitAdjektivCreation.addActionListener(e -> {
+            adjektivCreationFrame.setVisible(false);
+            menu.setVisible(true);
+
+            System.out.println("---Creating Adjektiv---");
+            System.out.println("Nominativ: " + adjektivNominativInput.getText());
+            System.out.println("Genitiv Maskulin: " + genitivMaskulinInput.getText());
+            System.out.println("Genitiv Feminin: " + genitivFeminin.getText());
+            System.out.println("Genitiv Neutrum: " + genitivNeutrumInput.getText());
+            System.out.println("Bedeutung: " +adjektivBedeutung.getText());
+
+            adjektivList.add(new Adjektiv(
+                    adjektivNominativ.getText(),
+                    genitivMaskulinInput.getText(),
+                    genitivFemininInput.getText(),
+                    genitivNeutrumInput.getText(),
+                    adjektivBedeutngInput.getText()
+            ));
+
+            adjektivNominativInput.setText("");
+            genitivMaskulinInput.setText("");
+            genitivFemininInput.setText("");
+            genitivNeutrumInput.setText("");
+            adjektivBedeutngInput.setText("");
+        });
         //endregion
 
 
@@ -237,16 +308,112 @@ public class Frame {
             System.out.println("#Adjektiv");
             System.out.println(adjektivList.size());
 
-            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            // create an XMLOutputFactory
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            // create XMLEventWriter
+            XMLEventWriter eventWriter = null;
             try {
-                DocumentBuilder db = documentFactory.newDocumentBuilder();
+                eventWriter = outputFactory
+                        .createXMLEventWriter(new FileOutputStream(System.getProperty("user.dir")+ "/vocab.xml"));
+            } catch (XMLStreamException ex) {
+                ex.printStackTrace();
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            // create an EventFactory
+            XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+            XMLEvent end = eventFactory.createDTD("\n");
+            // create and write Start Tag
+            StartDocument startDocument = eventFactory.createStartDocument();
+            try {
+                eventWriter.add(startDocument);
+            } catch (XMLStreamException ex) {
+                ex.printStackTrace();
+            }
+            StartElement configStartElement = eventFactory.createStartElement("",
+                    "", "vocabList");
+            try {
+                eventWriter.add(configStartElement);
+                eventWriter.add(end);
+            } catch (XMLStreamException ex) {
+                ex.printStackTrace();
+            }
+            try{
+                CreateSubstantiv(eventWriter, substantivList.get(0));
 
-            } catch (ParserConfigurationException ex) {
+
+                eventWriter.add(eventFactory.createEndElement("", "", "vocabList"));
+                eventWriter.add(end);
+                eventWriter.add(eventFactory.createEndDocument());
+                eventWriter.close();
+            }catch (Exception ex){
                 ex.printStackTrace();
             }
 
 
+
         });
+    }
+    private static void CreateSubstantiv( XMLEventWriter eventWriter, Substantiv substantivToAdd){
+        XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+        XMLEvent end = eventFactory.createDTD("\n");
+        XMLEvent tab = eventFactory.createDTD("\t");
+        // create Start node
+
+        try {
+            StartElement sElement = eventFactory.createStartElement("","","vocab");
+
+            eventWriter.add(sElement);
+            eventWriter.add(tab);
+            StartElement typeStartElement = eventFactory.createStartElement("","","type");
+            eventWriter.add(typeStartElement);
+            eventWriter.add(eventFactory.createCharacters("Substantiv"));
+            EndElement typeEndElement = eventFactory.createEndElement("","","type");
+            eventWriter.add(typeEndElement);
+            StartElement grundformStartElement = eventFactory.createStartElement("", "","grundform");
+            eventWriter.add(grundformStartElement);
+            eventWriter.add(eventFactory.createCharacters(substantivToAdd.grundform));
+            EndElement grundformEndElement = eventFactory.createEndElement("", "","grundform");
+            eventWriter.add(grundformEndElement);
+
+            StartElement genusStartElement = eventFactory.createStartElement("","","genus");
+            eventWriter.add(genusStartElement);
+            switch (substantivToAdd.genus){
+                case MASKULINUM:
+                    eventWriter.add(eventFactory.createCharacters("maskulinum"));
+                    break;
+                case FEMININUM:
+                    eventWriter.add(eventFactory.createCharacters("femininum"));
+                    break;
+                case NEUTRUM:
+                    eventWriter.add(eventFactory.createCharacters("neutrum"));
+                    break;
+            }
+            EndElement genusEndElement = eventFactory.createEndElement("","","genus");
+            eventWriter.add(genusEndElement);
+
+            StartElement genitivStartElement = eventFactory.createStartElement("","","genitiv");
+            eventWriter.add(genitivStartElement);
+            eventWriter.add(eventFactory.createCharacters(substantivToAdd.genitiv));
+            EndElement genitivEndElement = eventFactory.createEndElement("","","genitiv");
+            eventWriter.add(genitivEndElement);
+
+            StartElement bedeutungStartElement = eventFactory.createStartElement("","","bedeutung");
+            eventWriter.add(bedeutungStartElement);
+            eventWriter.add(eventFactory.createCharacters(substantivToAdd.bedeutung));
+            EndElement bedeutungEndElement = eventFactory.createEndElement("","","bedeutung");
+            eventWriter.add(bedeutungEndElement);
+
+            EndElement eElement = eventFactory.createEndElement("", "", "vocab");
+
+            eventWriter.add(eElement);
+            eventWriter.add(end);
+
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

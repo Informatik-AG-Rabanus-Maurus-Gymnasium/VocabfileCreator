@@ -1,22 +1,46 @@
 package me.soeren;
 
+import org.w3c.dom.Document;
+
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Frame {
+
     public static void main(String[] args){
+        final Genus[] genus = new Genus[1];
+        java.util.List<Substantiv> substantivList = new ArrayList<Substantiv>();
+        java.util.List<Verb> verbList = new ArrayList<Verb>();
+        java.util.List<Adjektiv> adjektivList = new ArrayList<Adjektiv>();
 
         System.out.println("TEST");
         JFrame menu = new JFrame("XML Creator");
         BorderLayout layout = new BorderLayout();
+
         JButton exit = new JButton("exit");
+        JButton createFile = new JButton("Datei Erstellen");
+        JPanel buttonMainFrame = new JPanel();
+        buttonMainFrame.add(exit);
+        buttonMainFrame.add(createFile);
+
         JLabel title = new JLabel("XML Creator");
         JButton createSubstantivBtn = new JButton("Substantiv hinzufügen");
         JButton createVerb = new JButton("Verb hinzufügen");
         JButton createAdjektiv = new JButton("Adjektiv hinzufügen");
+
 
         JPanel titleContainer = new JPanel();
         titleContainer.setLayout(new FlowLayout());
@@ -36,7 +60,8 @@ public class Frame {
 
         menu.add(titleContainer, BorderLayout.PAGE_START);
         menu.add(buttons, BorderLayout.CENTER);
-        menu.add(exit, BorderLayout.PAGE_END);
+        menu.add(buttonMainFrame, BorderLayout.PAGE_END);
+
 
         menu.setSize(500,400);
         menu.setVisible(true);
@@ -83,7 +108,7 @@ public class Frame {
 
         createSubstantivFrame.pack();
 
-        //endregion
+
         createSubstantivBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,12 +129,72 @@ public class Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: add Logic for Substantiv Creation
+                createSubstantivFrame.setVisible(false);
+                menu.setVisible(true);
+                switch (genusChooser.getSelectedIndex()){
+                    case 0:
+                        genus[0] = Genus.MASKULINUM;
+                        break;
+                    case 1:
+                        genus[0] = Genus.FEMININUM;
+                        break;
+                    case 2:
+                        genus[0] = Genus.NEUTRUM;
+                        break;
+                }
+
+                System.out.println("---Creating Substantiv---");
+                System.out.println("Bedeutung: " + grundFormInput.getText());
+                System.out.println("Genus: " + genus[0]);
+                System.out.println("Genitiv: " + genitivInput.getText());
+                System.out.println("Bedeutung: " + bedeutungInput.getText());
+                substantivList.add(new Substantiv(grundFormInput.getText(),
+                        genus[0],
+                        genitivInput.getText(),
+                        bedeutungInput.getText() ));
             }
         });
+        //endregion
+
+        //Region VerbJFrameComponents
 
 
 
 
+        //endregion
+
+
+
+
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        createFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Working Directory: " + System.getProperty("user.dir"));
+                System.out.println("---List of Items---");
+                System.out.println("#Substantiv");
+                System.out.println(substantivList.size());
+                System.out.println("#Verb");
+                System.out.println(verbList.size());
+                System.out.println("#Adjektiv");
+                System.out.println(adjektivList.size());
+
+
+                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+                try {
+                    DocumentBuilder db = documentFactory.newDocumentBuilder();
+
+                } catch (ParserConfigurationException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
     }
     void CreateXml(){
 

@@ -22,9 +22,9 @@ public class Frame {
 
     public static void main(String[] args){
         final Genus[] genus = new Genus[1];
-        java.util.List<Substantiv> substantivList = new ArrayList<Substantiv>();
-        java.util.List<Verb> verbList = new ArrayList<Verb>();
-        java.util.List<Adjektiv> adjektivList = new ArrayList<Adjektiv>();
+        java.util.List<Substantiv> substantivList = new ArrayList<>();
+        java.util.List<Verb> verbList = new ArrayList<>();
+        java.util.List<Adjektiv> adjektivList = new ArrayList<>();
 
         System.out.println("TEST");
         JFrame menu = new JFrame("XML Creator");
@@ -38,7 +38,7 @@ public class Frame {
 
         JLabel title = new JLabel("XML Creator");
         JButton createSubstantivBtn = new JButton("Substantiv hinzufügen");
-        JButton createVerb = new JButton("Verb hinzufügen");
+        JButton createVerbBtn = new JButton("Verb hinzufügen");
         JButton createAdjektiv = new JButton("Adjektiv hinzufügen");
 
 
@@ -55,7 +55,7 @@ public class Frame {
 
         buttons.add(createSubstantivBtn);
 
-        buttons.add(createVerb);
+        buttons.add(createVerbBtn);
         buttons.add(createAdjektiv);
 
         menu.add(titleContainer, BorderLayout.PAGE_START);
@@ -85,11 +85,13 @@ public class Frame {
         JLabel genitivLabel = new JLabel("Genitiv: ");
         JTextField genitivInput = new JTextField();
 
-        JLabel bedeutungLabel = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen): ");
+        JLabel bedeutungLabel = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen):: ");
+
         JTextField bedeutungInput = new JTextField();
 
+
         JButton exitSubstantivMenu = new JButton("Zurück");
-        JButton submitSubstantivCreation = new JButton("Eingabe Bestätigen");
+        JButton addSubstantiv = new JButton("Eingabe Bestätigen");
 
         createSubstantivFrame.add(grundFormLabel);
         createSubstantivFrame.add(grundFormInput);
@@ -104,99 +106,147 @@ public class Frame {
         createSubstantivFrame.add(bedeutungInput);
 
         createSubstantivFrame.add(exitSubstantivMenu);
-        createSubstantivFrame.add(submitSubstantivCreation);
+        createSubstantivFrame.add(addSubstantiv);
 
         createSubstantivFrame.pack();
 
 
-        createSubstantivBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createSubstantivFrame.setVisible(true);
-                menu.setVisible(false);
-            }
+        createSubstantivBtn.addActionListener(e -> {
+            createSubstantivFrame.setVisible(true);
+            menu.setVisible(false);
         });
 
-        exitSubstantivMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                createSubstantivFrame.setVisible(false);
-                menu.setVisible(true);
+        exitSubstantivMenu.addActionListener(e -> {
+            createSubstantivFrame.setVisible(false);
+            menu.setVisible(true);
 
-            }
         });
-        submitSubstantivCreation.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: add Logic for Substantiv Creation
-                createSubstantivFrame.setVisible(false);
-                menu.setVisible(true);
-                switch (genusChooser.getSelectedIndex()){
-                    case 0:
-                        genus[0] = Genus.MASKULINUM;
-                        break;
-                    case 1:
-                        genus[0] = Genus.FEMININUM;
-                        break;
-                    case 2:
-                        genus[0] = Genus.NEUTRUM;
-                        break;
-                }
-
-                System.out.println("---Creating Substantiv---");
-                System.out.println("Bedeutung: " + grundFormInput.getText());
-                System.out.println("Genus: " + genus[0]);
-                System.out.println("Genitiv: " + genitivInput.getText());
-                System.out.println("Bedeutung: " + bedeutungInput.getText());
-                substantivList.add(new Substantiv(grundFormInput.getText(),
-                        genus[0],
-                        genitivInput.getText(),
-                        bedeutungInput.getText() ));
+        addSubstantiv.addActionListener(e -> {
+            //TODO: add Logic for Substantiv Creation
+            createSubstantivFrame.setVisible(false);
+            menu.setVisible(true);
+            switch (genusChooser.getSelectedIndex()) {
+                case 0 -> genus[0] = Genus.MASKULINUM;
+                case 1 -> genus[0] = Genus.FEMININUM;
+                case 2 -> genus[0] = Genus.NEUTRUM;
             }
+
+            System.out.println("---Creating Substantiv---");
+            System.out.println("Bedeutung: " + grundFormInput.getText());
+            System.out.println("Genus: " + genus[0]);
+            System.out.println("Genitiv: " + genitivInput.getText());
+            System.out.println("Bedeutung: " + bedeutungInput.getText());
+            substantivList.add(new Substantiv(grundFormInput.getText(),
+                    genus[0],
+                    genitivInput.getText(),
+                    bedeutungInput.getText() ));
+            //clearing Input
+            grundFormInput.setText("");
+            genusChooser.setSelectedIndex(0);
+            bedeutungInput.setText("");
+            genitivInput.setText("");
+
         });
         //endregion
 
         //Region VerbJFrameComponents
+        JFrame verbCreationFrame = new JFrame("Verb erstellen");
+        verbCreationFrame.setLayout(new GridLayout(6,2,30,20));
 
+        JLabel verbInfinitiv = new JLabel("Infinitiv: ");
+        JTextField verbInfinitivInput = new JTextField();
 
+        JLabel praesensIndikativ = new JLabel("Praesens Indikativ: ");
+        JTextField praesensIndikativInput = new JTextField();
 
+        JLabel perfektIndikativ = new JLabel("Perfekt Indikativ: ");
+        JTextField perfektIndikativInput = new JTextField();
 
+        JLabel supinstamm = new JLabel("Supinstamm ");
+        JTextField supinstammInput = new JTextField();
+
+        JLabel verbBedeutung = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen): ");
+        JTextField verbBedeutungInput = new JTextField();
+
+        JButton exitVerbCreation = new JButton("zurück zum Menü");
+        JButton addVerb = new JButton("Eingabe Bestätigen");
+
+        verbCreationFrame.add(verbInfinitiv);
+        verbCreationFrame.add(verbInfinitivInput);
+        verbCreationFrame.add(praesensIndikativ);
+        verbCreationFrame.add(praesensIndikativInput);
+        verbCreationFrame.add(perfektIndikativ);
+        verbCreationFrame.add(perfektIndikativInput);
+        verbCreationFrame.add(supinstamm);
+        verbCreationFrame.add(supinstammInput);
+        verbCreationFrame.add(verbBedeutung);
+        verbCreationFrame.add(verbBedeutungInput);
+        verbCreationFrame.add(exitVerbCreation);
+        verbCreationFrame.add(addVerb);
+        verbCreationFrame.pack();
+
+        createVerbBtn.addActionListener(e -> {
+            menu.setVisible(false);
+            verbCreationFrame.setVisible(true);
+        });
+
+        exitVerbCreation.addActionListener(e -> {
+            menu.setVisible(true);
+            verbCreationFrame.setVisible(false);
+        });
+
+        addVerb.addActionListener(e -> {
+            menu.setVisible(true);
+            verbCreationFrame.setVisible(false);
+
+            System.out.println("---Creating Verb---");
+            System.out.println("Bedeutung: " + verbBedeutungInput.getText() );
+            System.out.println("Infintiv: " + verbInfinitivInput.getText());
+            System.out.println("Praesens Indikativ: " + praesensIndikativInput.getText());
+            System.out.println("Perfekt Indikativ: " + perfektIndikativInput.getText());
+            System.out.println("Supinstamm: " + supinstammInput.getText());
+
+            verbList.add(new Verb(verbInfinitivInput.getText(),
+                    praesensIndikativInput.getText(),
+                    perfektIndikativInput.getText(),
+                    verbBedeutungInput.getText(),
+                    supinstammInput.getText()));
+
+            verbInfinitivInput.setText("");
+            praesensIndikativInput.setText("");
+            perfektIndikativInput.setText("");
+            verbBedeutungInput.setText("");
+            supinstammInput.setText("");
+        });
+        //endregion
+
+        //Region AdjektivJFrameCreation
+        JFrame adjektivCreationFrame = new JFrame("Adjektiv hinzufügen");
         //endregion
 
 
 
+        exit.addActionListener(e -> System.exit(0));
+        createFile.addActionListener(e -> {
+            System.out.println("Working Directory: " + System.getProperty("user.dir"));
+            System.out.println("---List of Items---");
+            System.out.println("#Substantiv");
+            System.out.println(substantivList.size());
+            System.out.println("#Verb");
+            System.out.println(verbList.size());
+            System.out.println("#Adjektiv");
+            System.out.println(adjektivList.size());
 
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            try {
+                DocumentBuilder db = documentFactory.newDocumentBuilder();
+
+            } catch (ParserConfigurationException ex) {
+                ex.printStackTrace();
             }
-        });
-        createFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Working Directory: " + System.getProperty("user.dir"));
-                System.out.println("---List of Items---");
-                System.out.println("#Substantiv");
-                System.out.println(substantivList.size());
-                System.out.println("#Verb");
-                System.out.println(verbList.size());
-                System.out.println("#Adjektiv");
-                System.out.println(adjektivList.size());
 
 
-                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-                try {
-                    DocumentBuilder db = documentFactory.newDocumentBuilder();
-
-                } catch (ParserConfigurationException ex) {
-                    ex.printStackTrace();
-                }
-
-            }
         });
     }
-    void CreateXml(){
 
-    }
 }

@@ -3,21 +3,14 @@ package me.soeren;
 import org.w3c.dom.*;
 
 import javax.swing.*;
-import java.io.*;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-
-
-
 import java.awt.*;
-
+import java.io.*;
 import java.util.ArrayList;
 
 public class Frame {
@@ -339,7 +332,13 @@ public class Frame {
                 ex.printStackTrace();
             }
             try{
-                CreateSubstantiv(eventWriter, substantivList.get(0));
+                for (Substantiv s : substantivList){
+                    CreateSubstantiv(eventWriter, s);
+                }
+
+                for(Verb v : verbList){
+                    CreateVerb(eventWriter, v);
+                }
 
 
                 eventWriter.add(eventFactory.createEndElement("", "", "vocabList"));
@@ -354,6 +353,63 @@ public class Frame {
 
         });
     }
+    private static void CreateAdjektiv(XMLEventWriter eventWriter, Adjektiv a){
+
+    }
+
+    private static void CreateVerb(XMLEventWriter eventWriter, Verb verbToAdd){
+
+        XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+        XMLEvent end = eventFactory.createDTD("\n");
+        XMLEvent tab = eventFactory.createDTD("\t");
+
+        try{
+            StartElement sElement = eventFactory.createStartElement("","","vocab");
+            eventWriter.add(sElement);
+            eventWriter.add(tab);
+            StartElement typeStartElement = eventFactory.createStartElement("","","type");
+            eventWriter.add(typeStartElement);
+            eventWriter.add(eventFactory.createCharacters("verb"));
+            EndElement typeEndElement = eventFactory.createEndElement("","","type");
+            eventWriter.add(typeEndElement);
+
+            StartElement infinitivStartElement = eventFactory.createStartElement("","","infinitiv");
+            eventWriter.add(infinitivStartElement);
+            eventWriter.add(eventFactory.createCharacters(verbToAdd.infiniv));
+            EndElement infinitivEndElement = eventFactory.createEndElement("","","infinitiv");
+            eventWriter.add(infinitivEndElement);
+
+            StartElement praesensIndikativStart = eventFactory.createStartElement("","","praesensIndikativ");
+            eventWriter.add(praesensIndikativStart);
+            EndElement praesensIndikativEnd = eventFactory.createEndElement("","","praesensIndikativ");
+            eventWriter.add(eventFactory.createCharacters(verbToAdd.praesensIndikativ));
+            eventWriter.add(praesensIndikativEnd);
+
+            StartElement perfektIndikativStart = eventFactory.createStartElement("","","perfektIndikativ");
+            eventWriter.add(perfektIndikativStart);
+            EndElement perfektIndikativEnd = eventFactory.createEndElement("","","perfektIndikativ");
+            eventWriter.add(eventFactory.createCharacters(verbToAdd.perfektIndikativ));
+            eventWriter.add(perfektIndikativEnd);
+
+            StartElement supinstammStart = eventFactory.createStartElement("","","supinstamm");
+            eventWriter.add(supinstammStart);
+            EndElement supinstammEnd = eventFactory.createEndElement("","","supinstamm");
+            eventWriter.add(eventFactory.createCharacters(verbToAdd.supinstamm));
+            eventWriter.add(supinstammEnd);
+
+            StartElement bedeutungStart = eventFactory.createStartElement("","","bedeutung");
+            eventWriter.add(bedeutungStart);
+            EndElement bedeutungEnd = eventFactory.createEndElement("","","bedeutung");
+            eventWriter.add(eventFactory.createCharacters(verbToAdd.bedeutung));
+            eventWriter.add(bedeutungEnd);
+
+
+
+        }catch(XMLStreamException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void CreateSubstantiv( XMLEventWriter eventWriter, Substantiv substantivToAdd){
         XMLEventFactory eventFactory = XMLEventFactory.newInstance();
         XMLEvent end = eventFactory.createDTD("\n");

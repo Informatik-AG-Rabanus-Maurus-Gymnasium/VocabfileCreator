@@ -403,7 +403,9 @@ public class Frame {
             eventWriter.add(eventFactory.createCharacters(verbToAdd.bedeutung));
             eventWriter.add(bedeutungEnd);
 
-
+            EndElement eElement = eventFactory.createEndElement("", "", "vocab");
+            eventWriter.add(eElement);
+            eventWriter.add(end);
 
         }catch(XMLStreamException e) {
             e.printStackTrace();

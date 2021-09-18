@@ -354,6 +354,11 @@ public class Frame {
                         CreateVerb(eventWriter, v);
                     }
                 }
+                for(Adjektiv a : adjektivList){
+                    if (eventWriter != null) {
+                        CreateAdjektiv(eventWriter, a);
+                    }
+                }
 
 
                 if (eventWriter != null) {
@@ -363,6 +368,7 @@ public class Frame {
                     eventWriter.close();
                 }
 
+                JOptionPane.showMessageDialog(menu, "Datei Erfolgreich erstellt!");
             }catch (Exception ex){
                 ex.printStackTrace();
             }
@@ -372,7 +378,58 @@ public class Frame {
         });
     }
     @SuppressWarnings("unused")
-    private static void CreateAdjektiv(XMLEventWriter eventWriter, Adjektiv a){
+    private static void CreateAdjektiv(XMLEventWriter eventWriter, Adjektiv adjektivToAdd){
+        XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+        XMLEvent end = eventFactory.createDTD("\n");
+        XMLEvent tab = eventFactory.createDTD("\t");
+
+        try{
+            StartElement sElement = eventFactory.createStartElement("","","vocab");
+            eventWriter.add(sElement);
+            eventWriter.add(tab);
+
+            StartElement typeStartElement = eventFactory.createStartElement("","","type");
+            eventWriter.add(typeStartElement);
+            eventWriter.add(eventFactory.createCharacters("adjektiv"));
+            EndElement typeEndElement = eventFactory.createEndElement("","","type");
+            eventWriter.add(typeEndElement);
+
+            StartElement nominativStartElement = eventFactory.createStartElement("","","nominativ");
+            eventWriter.add(nominativStartElement);
+            eventWriter.add(eventFactory.createCharacters(adjektivToAdd.nominativ));
+            EndElement nominativEndElement = eventFactory.createEndElement("","","nominativ");
+            eventWriter.add(nominativEndElement);
+
+            StartElement firstGenitivStartElem = eventFactory.createStartElement("","","firstGenitiv");
+            eventWriter.add(firstGenitivStartElem);
+            eventWriter.add(eventFactory.createCharacters(adjektivToAdd.firstGenitiv));
+            EndElement firstGenitivEndElem = eventFactory.createEndElement("","","firstGenitiv");
+            eventWriter.add(firstGenitivEndElem);
+
+            StartElement secondGenitivStartElem = eventFactory.createStartElement("","","secondGenitiv");
+            eventWriter.add(secondGenitivStartElem);
+            eventWriter.add(eventFactory.createCharacters(adjektivToAdd.secondGenitiv));
+            EndElement secondGenitivEndElem = eventFactory.createEndElement("","","secondGenitiv");
+            eventWriter.add(secondGenitivEndElem);
+
+            StartElement thirdGenitivStartElem = eventFactory.createStartElement("","","thirdGenitiv");
+            eventWriter.add(thirdGenitivStartElem);
+            eventWriter.add(eventFactory.createCharacters(adjektivToAdd.thirdGenitiv));
+            EndElement thirdGenitivEndElem = eventFactory.createEndElement("","","thirdGenitiv");
+            eventWriter.add(thirdGenitivEndElem);
+
+            StartElement bedeutungStartElem = eventFactory.createStartElement("","","bedeutung");
+            eventWriter.add(bedeutungStartElem);
+            eventWriter.add(eventFactory.createCharacters(adjektivToAdd.bedeutung));
+            EndElement bedeutungEndElem = eventFactory.createEndElement("","","bedeutung");
+            eventWriter.add(bedeutungEndElem);
+
+            EndElement eElement = eventFactory.createEndElement("", "", "vocab");
+            eventWriter.add(eElement);
+            eventWriter.add(end);
+        }catch(XMLStreamException e) {
+            e.printStackTrace();
+        }
 
     }
 

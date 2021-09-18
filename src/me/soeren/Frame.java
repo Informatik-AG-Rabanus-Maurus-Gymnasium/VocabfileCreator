@@ -1,16 +1,17 @@
 package me.soeren;
 
-import org.w3c.dom.*;
-
 import javax.swing.*;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.*;
-import javax.xml.transform.*;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartDocument;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 import java.awt.*;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class Frame {
@@ -308,9 +309,7 @@ public class Frame {
             try {
                 eventWriter = outputFactory
                         .createXMLEventWriter(new FileOutputStream(System.getProperty("user.dir")+ "/vocab.xml"));
-            } catch (XMLStreamException ex) {
-                ex.printStackTrace();
-            } catch (FileNotFoundException ex) {
+            } catch (XMLStreamException | FileNotFoundException ex) {
                 ex.printStackTrace();
             }
             // create an EventFactory
@@ -319,32 +318,44 @@ public class Frame {
             // create and write Start Tag
             StartDocument startDocument = eventFactory.createStartDocument();
             try {
-                eventWriter.add(startDocument);
+                if (eventWriter != null) {
+                    eventWriter.add(startDocument);
+                }
             } catch (XMLStreamException ex) {
                 ex.printStackTrace();
             }
             StartElement configStartElement = eventFactory.createStartElement("",
                     "", "vocabList");
             try {
-                eventWriter.add(configStartElement);
-                eventWriter.add(end);
+                if (eventWriter != null) {
+                    eventWriter.add(configStartElement);
+                    eventWriter.add(end);
+                }
+
             } catch (XMLStreamException ex) {
                 ex.printStackTrace();
             }
             try{
                 for (Substantiv s : substantivList){
-                    CreateSubstantiv(eventWriter, s);
+                    if (eventWriter != null) {
+                        CreateSubstantiv(eventWriter, s);
+                    }
                 }
 
                 for(Verb v : verbList){
-                    CreateVerb(eventWriter, v);
+                    if (eventWriter != null) {
+                        CreateVerb(eventWriter, v);
+                    }
                 }
 
 
-                eventWriter.add(eventFactory.createEndElement("", "", "vocabList"));
-                eventWriter.add(end);
-                eventWriter.add(eventFactory.createEndDocument());
-                eventWriter.close();
+                if (eventWriter != null) {
+                    eventWriter.add(eventFactory.createEndElement("", "", "vocabList"));
+                    eventWriter.add(end);
+                    eventWriter.add(eventFactory.createEndDocument());
+                    eventWriter.close();
+                }
+
             }catch (Exception ex){
                 ex.printStackTrace();
             }
@@ -353,6 +364,7 @@ public class Frame {
 
         });
     }
+    @SuppressWarnings("unused")
     private static void CreateAdjektiv(XMLEventWriter eventWriter, Adjektiv a){
 
     }
@@ -436,16 +448,10 @@ public class Frame {
 
             StartElement genusStartElement = eventFactory.createStartElement("","","genus");
             eventWriter.add(genusStartElement);
-            switch (substantivToAdd.genus){
-                case MASKULINUM:
-                    eventWriter.add(eventFactory.createCharacters("maskulinum"));
-                    break;
-                case FEMININUM:
-                    eventWriter.add(eventFactory.createCharacters("femininum"));
-                    break;
-                case NEUTRUM:
-                    eventWriter.add(eventFactory.createCharacters("neutrum"));
-                    break;
+            switch (substantivToAdd.genus) {
+                case MASKULINUM -> eventWriter.add(eventFactory.createCharacters("maskulinum"));
+                case FEMININUM -> eventWriter.add(eventFactory.createCharacters("femininum"));
+                case NEUTRUM -> eventWriter.add(eventFactory.createCharacters("neutrum"));
             }
             EndElement genusEndElement = eventFactory.createEndElement("","","genus");
             eventWriter.add(genusEndElement);

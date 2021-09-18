@@ -246,8 +246,9 @@ public class Frame {
         JTextField adjektivBedeutngInput = new JTextField();
 
         JButton exitAdjektivCreation = new JButton("zurück zum Menü");
-        JButton addAdjektiv = new JButton("Eingabe bestätiger");
+        JButton addAdjektiv = new JButton("Eingabe bestätigen (bei mehreren Bedeutungen mit Semicolon (;) trenen):");
 
+        adjektivCreationFrame.setLayout(new GridLayout(7,2,30,20));
 
         adjektivCreationFrame.add(adjektivNominativ);
         adjektivCreationFrame.add(adjektivNominativInput);
@@ -261,6 +262,8 @@ public class Frame {
         adjektivCreationFrame.add(adjektivBedeutngInput);
         adjektivCreationFrame.add(exitAdjektivCreation);
         adjektivCreationFrame.add(addAdjektiv);
+
+        adjektivCreationFrame.pack();
 
         exitAdjektivCreation.addActionListener(e -> {
             adjektivCreationFrame.setVisible(false);
@@ -289,7 +292,11 @@ public class Frame {
         });
         //endregion
 
-
+        createAdjektiv.addActionListener(e -> {
+            menu.setVisible(false);
+            adjektivCreationFrame.setVisible(true);
+                }
+        );
 
         exit.addActionListener(e -> System.exit(0));
         createFile.addActionListener(e -> {

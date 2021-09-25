@@ -242,11 +242,11 @@ public class Frame {
         JLabel genitivNeutrum = new JLabel("Genitiv n. ");
         JTextField genitivNeutrumInput = new JTextField();
 
-        JLabel adjektivBedeutung = new JLabel("Bedeutung: ");
+        JLabel adjektivBedeutung = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen): ");
         JTextField adjektivBedeutngInput = new JTextField();
 
         JButton exitAdjektivCreation = new JButton("zurück zum Menü");
-        JButton addAdjektiv = new JButton("Eingabe bestätigen (bei mehreren Bedeutungen mit Semicolon (;) trenen):");
+        JButton addAdjektiv = new JButton("Eingabe bestätigen:");
 
         adjektivCreationFrame.setLayout(new GridLayout(7,2,30,20));
 
@@ -265,7 +265,17 @@ public class Frame {
 
         adjektivCreationFrame.pack();
 
-        exitAdjektivCreation.addActionListener(e -> {
+        exitAdjektivCreation.addActionListener(e ->{
+            adjektivCreationFrame.setVisible(false);
+            menu.setVisible(true);
+            adjektivNominativInput.setText("");
+            genitivMaskulinInput.setText("");
+            genitivFemininInput.setText("");
+            genitivNeutrumInput.setText("");
+            adjektivBedeutngInput.setText("");
+
+        });
+        addAdjektiv.addActionListener(e -> {
             adjektivCreationFrame.setVisible(false);
             menu.setVisible(true);
 

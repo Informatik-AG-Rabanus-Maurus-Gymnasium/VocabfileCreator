@@ -23,16 +23,15 @@ public class Frame {
         java.util.List<Adjektiv> adjektivList = new ArrayList<>();
 
         System.out.println("TEST");
-        JFrame menu = new JFrame("XML Creator");
+        JFrame menu = new JFrame("VokabelCreator");
         BorderLayout layout = new BorderLayout();
 
         JButton exit = new JButton("exit");
-        JButton createFile = new JButton("Datei Erstellen");
+        JButton createFile = new JButton("Datei erstellen");
         JPanel buttonMainFrame = new JPanel();
         buttonMainFrame.add(exit);
         buttonMainFrame.add(createFile);
 
-        JLabel title = new JLabel("XML Creator");
         JButton createSubstantivBtn = new JButton("Substantiv hinzufügen");
         JButton createVerbBtn = new JButton("Verb hinzufügen");
         JButton createAdjektiv = new JButton("Adjektiv hinzufügen");
@@ -40,7 +39,6 @@ public class Frame {
 
         JPanel titleContainer = new JPanel();
         titleContainer.setLayout(new FlowLayout());
-        titleContainer.add(title);
 
         createSubstantivBtn.setSize(200,40);
         menu.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -81,13 +79,13 @@ public class Frame {
         JLabel genitivLabel = new JLabel("Genitiv: ");
         JTextField genitivInput = new JTextField();
 
-        JLabel bedeutungLabel = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen):: ");
+        JLabel bedeutungLabel = new JLabel("Bedeutung (bei mehreren Bedeutungen mit Semicolon (;) trenen): ");
 
         JTextField bedeutungInput = new JTextField();
 
 
         JButton exitSubstantivMenu = new JButton("Zurück");
-        JButton addSubstantiv = new JButton("Eingabe Bestätigen");
+        JButton addSubstantiv = new JButton("Eingabe bestätigen");
 
         createSubstantivFrame.add(grundFormLabel);
         createSubstantivFrame.add(grundFormInput);
@@ -170,7 +168,7 @@ public class Frame {
         JTextField verbBedeutungInput = new JTextField();
 
         JButton exitVerbCreation = new JButton("zurück zum Menü");
-        JButton addVerb = new JButton("Eingabe Bestätigen");
+        JButton addVerb = new JButton("Eingabe bestätigen");
 
         verbCreationFrame.add(verbInfinitiv);
         verbCreationFrame.add(verbInfinitivInput);
